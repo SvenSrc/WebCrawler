@@ -1,4 +1,10 @@
 package webcrawler;
 
-public class ImageDownloader {
+import interfaces.IImageDownloader;
+
+public class ImageDownloader implements IImageDownloader {
+    @Override
+    public void downloadImage() {
+
+    }
 }

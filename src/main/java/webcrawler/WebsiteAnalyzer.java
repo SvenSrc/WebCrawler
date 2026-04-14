@@ -1,4 +1,10 @@
 package webcrawler;
 
-public class WebsiteAnalyzer {
+import interfaces.IWebsiteAnalyzer;
+
+public class WebsiteAnalyzer implements IWebsiteAnalyzer {
+    @Override
+    public void anaylzeWebsite() {
+        System.out.println("Analyzing");
+    }
 }

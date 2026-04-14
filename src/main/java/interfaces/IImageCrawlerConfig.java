@@ -2,7 +2,7 @@ package interfaces;
 
 public interface IImageCrawlerConfig {
 
-    int getNumberOfAllowedParallelWebsiteScanes();
+    int getNumberOfAllowedParallelWebsiteScans();
     int getNumberOfAllowedParallelImageDownloads();
     java.nio.file.Path getDownloadPath();
 
