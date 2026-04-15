@@ -1,7 +1,10 @@
 package interfaces;
 
+import java.net.URI;
+import java.util.List;
+
 public interface IWebsiteAnalyzer {
 
-    void anaylzeWebsite();
+    List<URI> anaylzeWebsite(URI uri);
 
 }

@@ -1,7 +1,5 @@
 import config.ImageCrawlerConfig;
 import webcrawler.ImageCrawler;
-import webcrawler.ImageDownloader;
-import webcrawler.WebsiteAnalyzer;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -14,11 +12,9 @@ public class Main {
                 3,
                 Path.of("downloads/images")
         );
-        ImageDownloader imageDownloader = new ImageDownloader();
-        WebsiteAnalyzer websiteAnalyzer = new WebsiteAnalyzer();
+        ImageCrawler imageCrawler = new ImageCrawler(config);
 
-        ImageCrawler imageCrawler = new ImageCrawler(config, imageDownloader, websiteAnalyzer);
-
-        imageCrawler.crawl(URI.create("https://en.wikipedia.org/wiki/Main_Page"));
+        // imageCrawler.crawl(URI.create("https://en.wikipedia.org/wiki/Main_Page"));
+        imageCrawler.crawl(URI.create("http://www.w3schools.com/html/html_images.asp"));
     }
 }
