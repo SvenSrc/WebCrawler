@@ -22,7 +22,6 @@ public class ImageCrawler implements IImageCrawler {
 
     private final AtomicInteger currentCrawls = new AtomicInteger(0);
     private final AtomicInteger currentDownloads = new AtomicInteger(0);
-    private final AtomicInteger urlCounter = new AtomicInteger(0);
 
     public ImageCrawler(
             ImageCrawlerConfig config
