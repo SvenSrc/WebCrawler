@@ -21,11 +21,12 @@ public class WebsiteAnalyzer implements IWebsiteAnalyzer {
             for (Element img : website.select("img")) {
                 String src = img.absUrl("src");
                 if (!src.isEmpty()) {
+                    src = src.replace("https", "http");
                     imageUris.add(URI.create(src));
                 }
             }
         } catch (Exception e) {
-            System.err.println("Failed to analyze: " + uri + " — " + e.getMessage());
+            System.err.println("Failed to analyze: " + uri + " - " + e.getMessage());
         }
         return imageUris;
     }

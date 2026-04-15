@@ -17,8 +17,9 @@ public class ImageDownloader implements IImageDownloader {
             InputStream inputStream = imageURI.toURL().openStream();
             Files.copy(inputStream, targetFolder);
 
+            System.out.println("Finished Download: " + imageURI);
         } catch (Exception e){
-            System.err.println("Failed to Download" + imageURI + " - " + e.getMessage());
+            System.err.println("Failed to Download: " + imageURI + " - " + e.getMessage());
         }
     }
 

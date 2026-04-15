@@ -14,7 +14,7 @@ public class Main {
         );
         ImageCrawler imageCrawler = new ImageCrawler(config);
 
-        // imageCrawler.crawl(URI.create("https://en.wikipedia.org/wiki/Main_Page"));
+        imageCrawler.crawl(URI.create("http://en.wikipedia.org/wiki/Main_Page"));
         imageCrawler.crawl(URI.create("http://www.w3schools.com/html/html_images.asp"));
     }
 }

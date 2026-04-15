@@ -26,7 +26,7 @@ public class ImageCrawler implements IImageCrawler {
 
     public ImageCrawler(
             ImageCrawlerConfig config
-            ){
+    ) {
         this.config = config;
         this.imageDownloaderExecutor = Executors.newFixedThreadPool(
                 config.getNumberOfAllowedParallelImageDownloads()
@@ -41,11 +41,13 @@ public class ImageCrawler implements IImageCrawler {
     public void crawl(URI uri) {
         currentCrawls.incrementAndGet();
 
-        int folderNumber = urlCounter.incrementAndGet();
-        Path folder = config.getDownloadPath().resolve(String.valueOf(folderNumber));
+        String host = uri.getHost();
 
-        websiteAnalyzerExecutor.submit(() ->{
-            try{
+        Path webFolder = config.getDownloadPath().resolve(host);
+        Path folder = getIncrementingFolder(webFolder);
+
+        websiteAnalyzerExecutor.submit(() -> {
+            try {
                 List<URI> imageURIs = websiteAnalyzer.anaylzeWebsite(uri);
                 Files.createDirectories(folder);
 
@@ -59,10 +61,9 @@ public class ImageCrawler implements IImageCrawler {
                         }
                     });
                 }
-                } catch (Exception e) {
-                    System.err.println("Error: " + uri + " - " + e.getMessage());
-                }
-            finally {
+            } catch (Exception e) {
+                System.err.println("Error: " + uri + " - " + e.getMessage());
+            } finally {
                 currentCrawls.decrementAndGet();
             }
         });
@@ -72,5 +73,18 @@ public class ImageCrawler implements IImageCrawler {
     @Override
     public boolean isIdle() {
         return currentCrawls.get() == 0 && currentDownloads.get() == 0;
+    }
+
+    @Override
+    public Path getIncrementingFolder(Path webFolder) {
+        int counter = 1;
+        while (true) {
+            Path candidate = webFolder.resolve(String.valueOf(counter));
+            if (!Files.exists(candidate)) {
+                return candidate;
+            }
+            counter++;
+        }
+
     }
 }
