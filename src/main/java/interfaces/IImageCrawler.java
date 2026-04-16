@@ -9,4 +9,5 @@ public interface IImageCrawler {
     boolean isIdle();
 
     Path getIncrementingFolder(Path webFolder);
+    void shutdown() throws Exception;
 }

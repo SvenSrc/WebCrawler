@@ -5,7 +5,7 @@ import java.net.URI;
 import java.nio.file.Path;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         ImageCrawlerConfig config = new ImageCrawlerConfig(
                 2,
@@ -16,5 +16,8 @@ public class Main {
 
         imageCrawler.crawl(URI.create("http://en.wikipedia.org/wiki/Main_Page"));
         imageCrawler.crawl(URI.create("http://www.w3schools.com/html/html_images.asp"));
+
+        imageCrawler.shutdown();
+
     }
 }

@@ -6,9 +6,13 @@ import interfaces.IImageCrawler;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageCrawler implements IImageCrawler {
@@ -16,6 +20,7 @@ public class ImageCrawler implements IImageCrawler {
     private final ImageCrawlerConfig config;
     private final ExecutorService imageDownloaderExecutor;
     private final ExecutorService websiteAnalyzerExecutor;
+    private final List<Future<?>> downloadFutures = Collections.synchronizedList(new ArrayList<>());
 
     private final ImageDownloader imageDownloader = new ImageDownloader();
     private final WebsiteAnalyzer websiteAnalyzer = new WebsiteAnalyzer();
@@ -38,6 +43,7 @@ public class ImageCrawler implements IImageCrawler {
 
     @Override
     public void crawl(URI uri) {
+        // Wo wird geprüft?
         currentCrawls.incrementAndGet();
 
         String host = uri.getHost();
@@ -52,14 +58,20 @@ public class ImageCrawler implements IImageCrawler {
 
                 for (URI imageURI : imageURIs) {
                     currentDownloads.incrementAndGet();
-                    imageDownloaderExecutor.submit(() -> {
+                    Future<?> downloadFuture = imageDownloaderExecutor.submit(() -> {
                         try {
                             imageDownloader.downloadImage(imageURI, folder);
                         } finally {
                             currentDownloads.decrementAndGet();
                         }
                     });
+                    downloadFutures.add((downloadFuture));
                 }
+
+                for(Future<?> downloadFuture : downloadFutures){
+                    downloadFuture.get();
+                }
+
             } catch (Exception e) {
                 System.err.println("Error: " + uri + " - " + e.getMessage());
             } finally {
@@ -85,5 +97,16 @@ public class ImageCrawler implements IImageCrawler {
             counter++;
         }
 
+    }
+
+    @Override
+    public void shutdown() throws Exception {
+        websiteAnalyzerExecutor.shutdown();
+        websiteAnalyzerExecutor.awaitTermination(15, TimeUnit.SECONDS);
+
+        imageDownloaderExecutor.shutdown();
+        imageDownloaderExecutor.awaitTermination(15, TimeUnit.SECONDS);
+
+        System.out.println("Finished. Shutting down");
     }
 }
