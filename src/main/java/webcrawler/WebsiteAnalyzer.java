@@ -3,11 +3,10 @@ package webcrawler;
 import interfaces.IWebsiteAnalyzer;
 import logger.Logger;
 import org.jsoup.Jsoup;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
 import java.net.URI;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 

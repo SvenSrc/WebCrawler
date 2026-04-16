@@ -73,7 +73,7 @@ public class ImageCrawler implements IImageCrawler {
                     downloadFutures.add((downloadFuture));
                 }
 
-                for(Future<?> downloadFuture : downloadFutures){
+                for (Future<?> downloadFuture : downloadFutures) {
                     downloadFuture.get();
                 }
 

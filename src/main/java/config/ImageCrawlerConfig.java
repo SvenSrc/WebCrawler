@@ -12,7 +12,7 @@ public class ImageCrawlerConfig implements IImageCrawlerConfig {
 
     public ImageCrawlerConfig(int numberOfAllowedParallelWebsiteScans,
                               int numberOfAllowedParallelImageDownloads,
-                              Path downloadPath){
+                              Path downloadPath) {
         this.numberOfAllowedParallelWebsiteScans = numberOfAllowedParallelWebsiteScans;
         this.numberOfAllowedParallelImageDownloads = numberOfAllowedParallelImageDownloads;
         this.downloadPath = downloadPath;

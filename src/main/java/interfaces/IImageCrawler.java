@@ -6,8 +6,10 @@ import java.nio.file.Path;
 public interface IImageCrawler {
 
     void crawl(final URI uri);
+
     boolean isIdle();
 
     Path getIncrementingFolder(Path webFolder);
+
     void shutdown() throws Exception;
 }
