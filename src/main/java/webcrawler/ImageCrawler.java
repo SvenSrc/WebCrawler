@@ -2,6 +2,7 @@ package webcrawler;
 
 import config.ImageCrawlerConfig;
 import interfaces.IImageCrawler;
+import logger.Logger;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -43,8 +44,8 @@ public class ImageCrawler implements IImageCrawler {
 
     @Override
     public void crawl(URI uri) {
-        // Wo wird geprüft?
         currentCrawls.incrementAndGet();
+        Logger.logCounter("Increment Crawl Amount", currentCrawls.get());
 
         String host = uri.getHost();
 
@@ -53,16 +54,20 @@ public class ImageCrawler implements IImageCrawler {
 
         websiteAnalyzerExecutor.submit(() -> {
             try {
-                List<URI> imageURIs = websiteAnalyzer.anaylzeWebsite(uri);
+                List<URI> imageURIs = websiteAnalyzer.analyzeWebsite(uri);
                 Files.createDirectories(folder);
 
                 for (URI imageURI : imageURIs) {
                     currentDownloads.incrementAndGet();
+                    Logger.logCounter("Increment Download Amount", currentDownloads.get());
+
                     Future<?> downloadFuture = imageDownloaderExecutor.submit(() -> {
                         try {
                             imageDownloader.downloadImage(imageURI, folder);
                         } finally {
                             currentDownloads.decrementAndGet();
+                            Logger.logCounter("Decrement Download Amount", currentDownloads.get());
+
                         }
                     });
                     downloadFutures.add((downloadFuture));
@@ -73,9 +78,10 @@ public class ImageCrawler implements IImageCrawler {
                 }
 
             } catch (Exception e) {
-                System.err.println("Error: " + uri + " - " + e.getMessage());
+                Logger.logError("Crawl Error", uri, e);
             } finally {
                 currentCrawls.decrementAndGet();
+                Logger.logCounter("Decrement Crawl Amount", currentCrawls.get());
             }
         });
 
@@ -107,6 +113,6 @@ public class ImageCrawler implements IImageCrawler {
         imageDownloaderExecutor.shutdown();
         imageDownloaderExecutor.awaitTermination(15, TimeUnit.SECONDS);
 
-        System.out.println("Finished. Shutting down");
+        Logger.logFinish();
     }
 }

@@ -1,25 +1,30 @@
 package webcrawler;
 
 import interfaces.IImageDownloader;
+import logger.Logger;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.time.LocalTime;
 
 public class ImageDownloader implements IImageDownloader {
     @Override
     public void downloadImage(URI imageURI, Path folder) {
         try{
+            Logger.logInfo("Starting Download", imageURI);
+
             String name = Path.of(imageURI.getPath()).getFileName().toString();
             Path targetFolder = resolveConflict(folder, name);
 
             InputStream inputStream = imageURI.toURL().openStream();
             Files.copy(inputStream, targetFolder);
 
-            System.out.println("Finished Download: " + imageURI);
+            Logger.logInfo("Finished Download", imageURI);
         } catch (Exception e){
-            System.err.println("Failed to Download: " + imageURI + " - " + e.getMessage());
+            Logger.logError("Failed to Download", imageURI, e);
         }
     }
 

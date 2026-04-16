@@ -16,6 +16,7 @@ public class Main {
 
         imageCrawler.crawl(URI.create("http://en.wikipedia.org/wiki/Main_Page"));
         imageCrawler.crawl(URI.create("http://www.w3schools.com/html/html_images.asp"));
+        imageCrawler.crawl(URI.create("http://github.com"));
 
         imageCrawler.shutdown();
 

@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface IWebsiteAnalyzer {
 
-    List<URI> anaylzeWebsite(URI uri);
+    List<URI> analyzeWebsite(URI uri);
 
 }
