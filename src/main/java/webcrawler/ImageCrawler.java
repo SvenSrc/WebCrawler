@@ -16,6 +16,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Implementation of IImageCrawler.
+ * Central coordinator of the web crawling process.
+ */
 public class ImageCrawler implements IImageCrawler {
 
     private final ImageCrawlerConfig config;
@@ -29,6 +33,16 @@ public class ImageCrawler implements IImageCrawler {
     private final AtomicInteger currentCrawls = new AtomicInteger(0);
     private final AtomicInteger currentDownloads = new AtomicInteger(0);
 
+    /**
+     * Creates a new ImageCrawler with the given configuration.
+     * Initializes two thread pools:
+     *  - one for website scanning
+     *  - one for image downloading
+     *  Both are bounded by the config values.
+     *
+     * @param config    The configuration object containing thread pool sizes
+     *                  and the download directory path
+     */
     public ImageCrawler(
             ImageCrawlerConfig config
     ) {
@@ -41,7 +55,14 @@ public class ImageCrawler implements IImageCrawler {
         );
     }
 
-
+    /**
+     * Adds a URI to the crawl queue. If a website scan slot is available the scan
+     * starts immediately, otherwise it is queued until a slot frees up.
+     * For each image found, a download task is submitted to the imageDownloaderExecutor.
+     * Uses Future to ensure all downloads of a page finish before the scan is marked done.
+     *
+     * @param uri   The URI of the website to crawl
+     */
     @Override
     public void crawl(URI uri) {
         currentCrawls.incrementAndGet();
@@ -87,24 +108,25 @@ public class ImageCrawler implements IImageCrawler {
 
     }
 
+    /**
+     * Returns whether the crawler is currently idle.
+     * Only returns true if no websites are being scanned
+     * and no images are being downloaded at the same time.
+     *
+     * @return  true if no scans or downloads are in progress, false otherwise
+     */
     @Override
     public boolean isIdle() {
         return currentCrawls.get() == 0 && currentDownloads.get() == 0;
     }
 
-    @Override
-    public Path getIncrementingFolder(Path webFolder) {
-        int counter = 1;
-        while (true) {
-            Path candidate = webFolder.resolve(String.valueOf(counter));
-            if (!Files.exists(candidate)) {
-                return candidate;
-            }
-            counter++;
-        }
-
-    }
-
+    /**
+     * Shuts down both executors.
+     * First waits for all website scans to finish, then waits for
+     * all image downloads to complete before returning.
+     *
+     * @throws Exception     If the shutdown is interrupted while waiting
+     */
     @Override
     public void shutdown() throws Exception {
         websiteAnalyzerExecutor.shutdown();
@@ -114,5 +136,26 @@ public class ImageCrawler implements IImageCrawler {
         imageDownloaderExecutor.awaitTermination(15, TimeUnit.SECONDS);
 
         Logger.logFinish();
+    }
+
+    /**
+     * Returns the next available numbered subfolder inside the given host folder.
+     * Starts at 1 and increments until a folder that does not yet exist is found.
+     * Example: downloads/images/w3schools.com/1 -> 2 -> 3
+     * Internal helper Method
+     *
+     * @param webFolder     The host folder to search for the next free subfolder
+     * @return              Path to the next free numbered subfolder
+     */
+    private Path getIncrementingFolder(Path webFolder) {
+        int counter = 1;
+        while (true) {
+            Path candidate = webFolder.resolve(String.valueOf(counter));
+            if (!Files.exists(candidate)) {
+                return candidate;
+            }
+            counter++;
+        }
+
     }
 }

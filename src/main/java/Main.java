@@ -3,8 +3,22 @@ import webcrawler.ImageCrawler;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Entry point of the ImageCrawler application.
+ * Configures and starts the crawler with a set of predefined URLs.
+ */
 public class Main {
+
+    /**
+     * Initializes the configuration, submits all URLs to the crawler
+     * and shuts it down after all scans and downloads are complete.
+     *
+     * @param args  Command line arguments (not used)
+     * @throws Exception If the crawler fails to shut down properly
+     */
     public static void main(String[] args) throws Exception {
 
         ImageCrawlerConfig config = new ImageCrawlerConfig(
@@ -14,9 +28,14 @@ public class Main {
         );
         ImageCrawler imageCrawler = new ImageCrawler(config);
 
-        imageCrawler.crawl(URI.create("http://en.wikipedia.org/wiki/Main_Page"));
-        imageCrawler.crawl(URI.create("http://www.w3schools.com/html/html_images.asp"));
-        imageCrawler.crawl(URI.create("http://github.com"));
+        ArrayList<String> uris = new ArrayList<String>(List.of(
+                "http://en.wikipedia.org/wiki/Main_Page",
+                "http://www.w3schools.com/html/html_images.asp"
+        ));
+
+        for(String uri : uris){
+            imageCrawler.crawl(URI.create(uri));
+        }
 
         imageCrawler.shutdown();
 
