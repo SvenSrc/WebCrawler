@@ -50,7 +50,7 @@ public class ImageDownloader implements IImageDownloader {
      * @param fileName  The desired original filename including extension
      * @return          A Path that does not yet exist on the filesystem
      */
-    private Path resolveConflict(Path folder, String fileName) {
+     public Path resolveConflict(Path folder, String fileName) {
         Path target = folder.resolve(fileName);
 
         if (!Files.exists(target)) {

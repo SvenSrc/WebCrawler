@@ -147,7 +147,7 @@ public class ImageCrawler implements IImageCrawler {
      * @param webFolder     The host folder to search for the next free subfolder
      * @return              Path to the next free numbered subfolder
      */
-    private Path getIncrementingFolder(Path webFolder) {
+     public Path getIncrementingFolder(Path webFolder) {
         int counter = 1;
         while (true) {
             Path candidate = webFolder.resolve(String.valueOf(counter));

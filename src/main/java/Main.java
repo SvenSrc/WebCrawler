@@ -28,9 +28,10 @@ public class Main {
         );
         ImageCrawler imageCrawler = new ImageCrawler(config);
 
-        ArrayList<String> uris = new ArrayList<String>(List.of(
+        ArrayList<String> uris = new ArrayList<>(List.of(
                 "http://en.wikipedia.org/wiki/Main_Page",
-                "http://www.w3schools.com/html/html_images.asp"
+                "http://www.w3schools.com/html/html_images.asp",
+                "https://github.com/"
         ));
 
         for(String uri : uris){
