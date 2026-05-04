@@ -13,5 +13,5 @@ import webcrawler.WebsiteAnalyzerTest;
         ImageCrawlerTest.class
 })
 public class MainTest {
-    // Runs all Tests when running this Main
+    // Runs all Tests when running this MainTest
 }
